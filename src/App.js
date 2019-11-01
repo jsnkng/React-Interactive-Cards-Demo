@@ -14,7 +14,9 @@ const App = () => {
     <Wrapper>
       <NavBar />
       <h1>Welcome to RookieCookie!</h1>
-      {classes.map(klass => <ClassCard content={klass}/>)}
+      <ClassCardContainer>
+        {classes.map(klass => <ClassCard content={klass}/>)}
+      </ClassCardContainer>
     </Wrapper>
   )
 }
@@ -36,10 +38,22 @@ const Wrapper = styled.div `
   text-align: center;
 `
 
+const ClassCardContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: top;
+  justify-content: center;
+  height: auto;
+  max-width: 1400px;
+  margin: 45px;
+  border-radius: 5px;
+  border: solid 1px gold;
+`
+
 const ClassCardWrapper = styled.div`
   height: 100%;
   width: 175px;
+  margin: 10px 5px;
   border-radius: 5px;
   border: solid 1px black;
-  overflow: hidden;
 `
