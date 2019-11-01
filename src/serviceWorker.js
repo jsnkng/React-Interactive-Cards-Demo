@@ -8,7 +8,7 @@
 // resources are updated in the background.
 
 // To learn more about the benefits of this model and instructions on how to
-// opt-in, read https://bit.ly/CRA-PWA
+// opt-in, read https://create-react-app.dev/docs/making-a-progressive-web-app/
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
