@@ -8256,6 +8256,11 @@ react-app-polyfill@^1.0.4:
     regenerator-runtime "0.13.3"
     whatwg-fetch "3.0.0"
 
+react-card-flip@^0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/react-card-flip/-/react-card-flip-0.8.1.tgz#53cd036d5145a10a5c45f2419252d6b5f8e47d8e"
+  integrity sha512-iuyRAya8anf5aaR6BTCYyF4Z767WEgzkYSUfjxEG2zwQYvXHv98NtngAQRM+lqmwYLPTv/5cuCIOsZapy38x0g==
+
 react-dev-utils@^9.1.0:
   version "9.1.0"
   resolved "https://registry.yarnpkg.com/react-dev-utils/-/react-dev-utils-9.1.0.tgz#3ad2bb8848a32319d760d0a84c56c14bdaae5e81"
@@ -9468,6 +9473,11 @@ styled-components@^4.4.0:
     stylis "^3.5.0"
     stylis-rule-sheet "^0.0.10"
     supports-color "^5.5.0"
+
+styled-react-modal@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/styled-react-modal/-/styled-react-modal-2.0.0.tgz#b42eec58c76b4c91afb4af925f2ab39e43b57263"
+  integrity sha512-WVsYpmdfWBgN51yEnIoLlqirhaWYizXFy+/p9Of75OBIiccMzT7gLVUZXPrV3xZDrLJNW/85orYuNOEcaBaKeA==
 
 stylehacks@^4.0.0:
   version "4.0.3"
