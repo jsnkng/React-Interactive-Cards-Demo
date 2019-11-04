@@ -1,7 +1,7 @@
 import React, {  useState } from 'react';
 import Modal from 'styled-react-modal';
 
-const ChangeImage = ({featureImage,setFeatureImage}) => {
+const ChangeImage = ({editImage, featureImage, setFeatureImage}) => {
     const [images, setImages] = useState([])
     const [isOpen, setIsOpen] = useState(false)
     const [search, setSearch] = useState('')
@@ -14,39 +14,56 @@ const ChangeImage = ({featureImage,setFeatureImage}) => {
       setIsOpen(!isOpen)
       e.preventDefault();
     }
-      const fetchImages = () => {
-      fetch('https://api.unsplash.com/search/photos?page=1&query='+ search +'&client_id=cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f&per_page=12')
-          .then(res => res.json())
-          .then(data => {
-               setImages(data.results)
-         console.log(data) 
-      })
-          .catch(err => {
-              console.log('Error happened during fetching!', err);
+    const fetchImages = () => {
+      fetch('https://api.unsplash.com/search/photos?page=1&query='+ search +'&client_id=cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f&per_page=16')
+      .then(res => res.json())
+      .then(data => {
+        setImages(data.results)
+        console.log(data) 
+      }).catch(err => {
+        console.log('Error happened during fetching!', err);
       });
       console.log(images)
     }
-  
+    const launchModalButton = (edit) => {
+      if(edit==='true') {
+        return (
+          <button onClick={toggleModal}>Change Picture</button>
+        )
+      }
+    }
+
     return (
       <div>
+        
         <div className="container__changeImage">
-          <button onClick={toggleModal}>Change Picture</button>
-          
+          {launchModalButton(editImage)}
           <div style={{ backgroundImage: 'url(' + featureImage + ')', 
-                  backgroundSize: 'cover', 
-                  backgroundPosition: 'center center',
-                  backgroundRepeat: 'no-repeat',
-                  width: '100%',
-                  height: '200px',
-                  borderRadius: '2px 2px 0 0',
-                  marginBottom: '10px'
+              backgroundSize: 'cover', 
+              backgroundPosition: 'center center',
+              backgroundRepeat: 'no-repeat',
+              width: '100%',
+              height: '200px',
+              marginBottom: '10px'
             }}></div>
         </div>
+
         <StyledModal
           isOpen={isOpen}
           onBackgroundClick={toggleModal}
           onEscapeKeydown={toggleModal}>
           <button className="container__changeImage_close" onClick={toggleModal}>X</button>
+          
+          <div className="container__changeImage_search">
+            <h2>Find a Picture</h2>
+            <input
+              type="text"
+              name="search"
+              value={search}
+              onChange={handleSearch}
+            />
+            <button onClick={fetchImages}>Search</button>
+          </div>
           <div className="container__changeImage_images">
             <div className="container__changeImage_flex">
               {
@@ -65,22 +82,15 @@ const ChangeImage = ({featureImage,setFeatureImage}) => {
               }
             </div>
           </div>
-          <br />
-          <div className="container__changeImage_search">
-            <h2>Find a Picture</h2>
-            <input
-              type="text"
-              name="search"
-              value={search}
-              onChange={handleSearch}
-            />
-            <button onClick={fetchImages}>Search</button>
-          </div>
         </StyledModal>
+
       </div>
     )
-  }
+}
   
+export default ChangeImage
+
+
 const StyledModal = Modal.styled`
   position:absolute;
   width: 90%;
@@ -94,8 +104,8 @@ const StyledModal = Modal.styled`
 
   & .container__changeImage_close {
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 15px;
+    right: 13px;
     width: 30px;
     padding: 5px;
   }
@@ -122,4 +132,3 @@ const StyledModal = Modal.styled`
     margin: 0 5px;
   }
 `
-export default ChangeImage

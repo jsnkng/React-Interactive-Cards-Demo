@@ -4,7 +4,7 @@ import ChangeImage from './ChangeImage';
 import ReactCardFlip from 'react-card-flip';
 
 const ClassCard = ({content,deleteClass}) => {
-    const [featureImage, setFeatureImage] = useState(content.featureImage || 'https://via.placeholder.com/500/000000/ffffff/?text=Ceci+ne+pas+une+repas+délicieux ')
+    const [featureImage, setFeatureImage] = useState(content.featureImage)
     const [title, setTitle] = useState(content.title)
     const [instructor, setInstructor] = useState(content.instructor)
     const [description, setDescription] = useState(content.description)
@@ -48,28 +48,32 @@ const ClassCard = ({content,deleteClass}) => {
     return (
       <ClassCardWrapper>
         <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-          
           <ClassCardDisplay key="front" onClick={toggleFlip}>
-            <div style={{ backgroundImage: 'url(' + featureImage + ')', 
+            {/* <div style={
+                { 
+                  backgroundImage: 'url(' + featureImage + ')', 
                   backgroundSize: 'cover', 
                   backgroundPosition: 'center center',
                   backgroundRepeat: 'no-repeat',
                   width: '100%',
-                  height: '200px',
-                  borderRadius: '2px 2px 0 0'
-            }}></div>
-            <h2>{title}</h2>
-            <h3>{instructor}</h3>
-            <p className="classDescription">{description}</p>
+                  height: '200px'
+                }
+              }></div> */}
+            <ChangeImage editImage='false' featureImage={featureImage} setFeatureImage={setFeatureImage} />
+
+            <div className="classInfo">
+              <h2>{title}</h2>
+              <h3>{instructor}</h3>
+              <p className="classDescription">{description}</p>
+            </div>
             <div>
               <span className={classType === 'live' ? 'classType live' : 'classType onDemand'}>{classType}</span>
               <span className="classDuration">{duration} min</span>
             </div>
-            <div></div>
           </ClassCardDisplay>
   
           <ClassCardForm key="back">
-            <ChangeImage featureImage={featureImage} setFeatureImage={setFeatureImage} />
+            <ChangeImage editImage='true' featureImage={featureImage} setFeatureImage={setFeatureImage} />
             <label>Title: </label>
             <input 
               type="text"
@@ -92,16 +96,10 @@ const ClassCard = ({content,deleteClass}) => {
               name="description"
               value={description}
               onChange={handleChangeDescription}
-              />
+            />
             <br />
-            <label>Duration:</label>
-            <input
-              type="number"
-              name="duration"
-              value={duration}
-              onChange={handleChangeDuration}
-              />
-            <label className="form__radioLabel">On-Demand: 
+            
+            <label className="form__radioLabelOnDemand">On-Demand: 
               <input
                 type="radio"
                 value="on-demand"
@@ -109,7 +107,7 @@ const ClassCard = ({content,deleteClass}) => {
                 checked={classType === 'on-demand'}
               />
             </label>
-            <label>Live: 
+            <label className="form__radioLabelLive">Live: 
               <input
                 type="radio"
                 value="live"
@@ -117,38 +115,47 @@ const ClassCard = ({content,deleteClass}) => {
                 checked={classType === 'live'}
               />
             </label>
+            <label className="form__inputLabelDuration">Duration:
+              <input
+                type="number"
+                name="duration"
+                value={duration}
+                onChange={handleChangeDuration}
+              />
+            </label>
+              
             <div className="form__buttons">
               <button onClick={handleFormSubmit}>Save</button>
               <button onClick={(e) => deleteClass(e, content.id)}>Delete</button>
             </div>
           </ClassCardForm>
-  
         </ReactCardFlip>
       </ClassCardWrapper>
     )
-  }
+}
+  
+export default ClassCard
 
 const ClassCardWrapper = styled.div`
   width: 350px;
   margin: 5px 5px;
 `
 const ClassCardDisplay = styled.div`
-  height: 470px;
-  background: #ffffff;
-  border-radius: 2px;
+  min-height: 470px;
+  background-color: #111111;
   border: solid 1px #cccccc;
   cursor: pointer;
   box-shadow: 3px 3px 3px 0px rgba(0,0,0,.05);
 
   & h2 {
     display: inline-block;
+    width: 100%;
     font-weight: 600;
     font-size: 1.5em;
     font-weight: 700;
-    padding: 10px;
+    padding: 10px 0;
     margin-top: -50px;
-    max-width: 80%;
-    background: rgba(255,255,255,1);
+    background-color: #ffffff;
   }
   & h3 {
     font-weight: 500;
@@ -156,8 +163,10 @@ const ClassCardDisplay = styled.div`
     padding: 0px 10px;
     margin-top: 0px;
   }
-  & div {
-    clear: both;
+  & .classInfo {
+    max-width: 85%;
+    margin: 0 auto 20px;
+    background-color: #ffffff;
   }
   & .classDescription {
     font-weight: 400;
@@ -174,11 +183,10 @@ const ClassCardDisplay = styled.div`
     padding: 2px 10px;
   }
   & .classType.live {
-    background: #000000;
+    background-color: #236d14;
   }
   & .classType.onDemand {
-    background: #ffffff;
-    border: 1px solid #cccccc;
+    background-color: #ffffff;
     border-left: 0px;
     color: #000000;
   }
@@ -187,16 +195,16 @@ const ClassCardDisplay = styled.div`
     height: 27px;
     float: right;
     border-radius: 32px;
-    font-weight:500;
+    color: #ffffff;
+    font-weight: 500;
     font-size: .75em;
     line-height: 1;
     margin: 0 5px 0 0;
   }    
 `
 const ClassCardForm = styled.div`
-  height: 470px;  
-  background: #ffffff;
-  border-radius: 2px;
+  min-height: 470px;  
+  background-color: #ffffff;
   border: solid 1px #cccccc;
   cursor: pointer;
   box-shadow: 3px 3px 3px 0px rgba(0,0,0,.05);
@@ -213,33 +221,50 @@ const ClassCardForm = styled.div`
     display: inline-block;
     vertical-align: top;
     padding: 5px;
+    margin: 2px;
     font-weight: 500;
-    font-size: .80em;
+    font-size: .8em;
     text-align: right;
     width: 75px;
   }
-  & label.form__radioLabel {
-    width: 125px;
-  }
   & textarea  {
     width: 180px;
-    font-size: .80em;
-    border: 1px solid #cccccc;
-    padding: 2px;
+    font-size: .85em;
+    border: 1px solid #dddddd;
+    background-color: #fafafa;
+    padding: 3px;
+    margin: 2px;
   }
   & input  {
     width: 180px;
-    font-size: .80em;
-    border: 1px solid #cccccc;
-    padding: 2px;
+    font-size: .85em;
+    border: 1px solid #dddddd;
+    background-color: #fafafa;
+    padding: 3px;
+    margin: 2px;
   } 
   & input[type="radio"]  {
     display: inline-block;
     width: 30px;
     border: 1px solid #cccccc;
   }
+  & label.form__radioLabelOnDemand {
+    padding: 0;
+    width: 115px;
+  }
+  & label.form__radioLabelLive {
+    padding: 0;
+    width: 65px;
+  }
+  & label.form__inputLabelDuration{
+    padding: 0;
+    width: 100px;
+    & input {
+      margin: 0px;
+      width: 35px;
+    }
+  }
   & .form__buttons {
-    padding: 10px;
+    padding: 15px 0 10px;
   }
 `
-export default ClassCard
