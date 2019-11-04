@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ModalProvider } from 'styled-react-modal';
 import classList from './classes';
 import NavBar from './NavBar';
-import Card from './ClassCard';
+import Card from './Card';
 
 const App = () => {
     const [classes, setClasses] = useState(classList)

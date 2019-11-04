@@ -1,9 +1,9 @@
 import React,{ useState } from 'react';
 import styled from 'styled-components';
-import ChangeImage from './ChangeImage';
+import Image from './Image';
 import ReactCardFlip from 'react-card-flip';
 
-const ClassCard = ({content,deleteClass}) => {
+const Card = ({content,deleteClass}) => {
     const [featureImage, setFeatureImage] = useState(content.featureImage)
     const [title, setTitle] = useState(content.title)
     const [instructor, setInstructor] = useState(content.instructor)
@@ -59,7 +59,7 @@ const ClassCard = ({content,deleteClass}) => {
                   height: '200px'
                 }
               }></div> */}
-            <ChangeImage editImage='false' featureImage={featureImage} setFeatureImage={setFeatureImage} />
+            <Image editImage='false' featureImage={featureImage} setFeatureImage={setFeatureImage} />
 
             <div className="classInfo">
               <h2>{title}</h2>
@@ -73,7 +73,7 @@ const ClassCard = ({content,deleteClass}) => {
           </ClassCardDisplay>
   
           <ClassCardForm key="back">
-            <ChangeImage editImage='true' featureImage={featureImage} setFeatureImage={setFeatureImage} />
+            <Image editImage='true' featureImage={featureImage} setFeatureImage={setFeatureImage} />
             <label>Title: </label>
             <input 
               type="text"
@@ -134,7 +134,7 @@ const ClassCard = ({content,deleteClass}) => {
     )
 }
   
-export default ClassCard
+export default Card
 
 const ClassCardWrapper = styled.div`
   width: 350px;

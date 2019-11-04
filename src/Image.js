@@ -1,7 +1,7 @@
 import React, {  useState } from 'react';
 import Modal from 'styled-react-modal';
 
-const ChangeImage = ({editImage, featureImage, setFeatureImage}) => {
+const Image = ({editImage, featureImage, setFeatureImage}) => {
     const [images, setImages] = useState([])
     const [isOpen, setIsOpen] = useState(false)
     const [search, setSearch] = useState('')
@@ -88,7 +88,7 @@ const ChangeImage = ({editImage, featureImage, setFeatureImage}) => {
     )
 }
   
-export default ChangeImage
+export default Image
 
 
 const StyledModal = Modal.styled`
