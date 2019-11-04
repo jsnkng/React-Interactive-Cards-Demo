@@ -22,11 +22,9 @@ const Image = ({editImage, featureImage, setFeatureImage}) => {
       .then(res => res.json())
       .then(data => {
         setImages(data.results)
-        console.log(data) 
       }).catch(err => {
         console.log('Error happened during fetching!', err);
       });
-      console.log(images)
     }
 
     const launchModalButton = (edit) => {
