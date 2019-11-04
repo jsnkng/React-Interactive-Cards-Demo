@@ -16,7 +16,8 @@ const Image = ({editImage, featureImage, setFeatureImage}) => {
       e.preventDefault();
     }
 
-    const fetchImages = () => {
+    const fetchImages = (e) => {
+      e.preventDefault();
       fetch('https://api.unsplash.com/search/photos?page=1&query='+ search +'&client_id=cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f&per_page=16')
       .then(res => res.json())
       .then(data => {
@@ -59,6 +60,7 @@ const Image = ({editImage, featureImage, setFeatureImage}) => {
           
           <div className="container__changeImage_search">
             <h2>Find a Picture</h2>
+            <form>
             <input
               type="text"
               name="search"
@@ -66,6 +68,7 @@ const Image = ({editImage, featureImage, setFeatureImage}) => {
               onChange={handleSearch}
             />
             <button onClick={fetchImages}>Search</button>
+            </form>
           </div>
           <div className="container__changeImage_images">
             <div className="container__changeImage_flex">

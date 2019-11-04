@@ -6,7 +6,7 @@ const NavBar = props => {
     <Header>
       <HeaderMenu>
         <HeaderItem>
-          RookieCookie
+          ReactJS – Demo
         </HeaderItem>
       </HeaderMenu>
     </Header>

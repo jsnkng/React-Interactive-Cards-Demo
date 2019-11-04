@@ -36,9 +36,9 @@ const App = () => {
     return (
       <Wrapper>
         <NavBar />
-        <h1>Welcome to RookieCookie!</h1>
+        <h1>Interactive Cards</h1>
         <p>Click on a Card to edit it.</p>
-        <button onClick={createClass}>+ New Class</button>
+        <button onClick={createClass}>+ New Card</button>
         <ModalProvider backgroundComponent={SpecialModalBackground}>
           <CardContainer>
             {classes.reverse().map(klass => <Card key={klass.id} content={klass} deleteClass={deleteClass} />)}
