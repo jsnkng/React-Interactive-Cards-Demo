@@ -1,13 +1,20 @@
 # React Interactive Cards Demo
 This repository deploys a static web page to GitHub Pages at the following URL: 
+
 https://jsnkng.github.io/React-Interactive-Cards-Demo/
 
-To Do: Develop API to Store/Retrieve Cards
+## To Do:
+- [ ] Develop API to Store/Retrieve Cards
+- [ ] Add Pagination to Cards Display
+- [ ] Add Pagination and Number of Results to Image Browser
 
-To Do: Add Pagination to Cards Display
+## To Install
 
-To Do: Add Pagination and Number of Results to Image Browser
+### `yarn install`
 
+## To Deploy
+
+### `yarn run deploy`
 
 
 ## RookieCookie
