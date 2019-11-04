@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import Modal from 'styled-react-modal';
 
 const Image = ({editImage, featureImage, setFeatureImage}) => {
@@ -10,10 +10,12 @@ const Image = ({editImage, featureImage, setFeatureImage}) => {
       const value = e.target.value
       setSearch(value)
     }
+
     const toggleModal = (e) => {
       setIsOpen(!isOpen)
       e.preventDefault();
     }
+
     const fetchImages = () => {
       fetch('https://api.unsplash.com/search/photos?page=1&query='+ search +'&client_id=cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f&per_page=16')
       .then(res => res.json())
@@ -25,6 +27,7 @@ const Image = ({editImage, featureImage, setFeatureImage}) => {
       });
       console.log(images)
     }
+
     const launchModalButton = (edit) => {
       if(edit==='true') {
         return (

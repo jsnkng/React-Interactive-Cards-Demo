@@ -1,4 +1,4 @@
-import React,{ useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Image from './Image';
 import ReactCardFlip from 'react-card-flip';
@@ -15,26 +15,32 @@ const Card = ({content,deleteClass}) => {
     const toggleFlip = (e) => {
       setIsFlipped(!isFlipped)
     }
+
     const handleChangeTitle = (e) => { 
       const value = e.target.value
       setTitle(value)
     }
+
     const handleChangeInstructor = (e) => { 
       const value = e.target.value
       setInstructor(value)
     }
+
     const handleChangeDescription = (e) => { 
       const value = e.target.value
       setDescription(value)
     }
+
     const handleChangeDuration = (e) => { 
       const value = e.target.value
       setDuration(value)
     }
+    
     const handleChangeClassType = (e) => { 
       const value = e.target.value
       setClassType(value)
     }
+
     const handleFormSubmit = (e) => {
       setTitle(title)
       setInstructor(instructor)
@@ -49,18 +55,7 @@ const Card = ({content,deleteClass}) => {
       <ClassCardWrapper>
         <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
           <ClassCardDisplay key="front" onClick={toggleFlip}>
-            {/* <div style={
-                { 
-                  backgroundImage: 'url(' + featureImage + ')', 
-                  backgroundSize: 'cover', 
-                  backgroundPosition: 'center center',
-                  backgroundRepeat: 'no-repeat',
-                  width: '100%',
-                  height: '200px'
-                }
-              }></div> */}
             <Image editImage='false' featureImage={featureImage} setFeatureImage={setFeatureImage} />
-
             <div className="classInfo">
               <h2>{title}</h2>
               <h3>{instructor}</h3>
@@ -98,7 +93,6 @@ const Card = ({content,deleteClass}) => {
               onChange={handleChangeDescription}
             />
             <br />
-            
             <label className="form__radioLabelOnDemand">On-Demand: 
               <input
                 type="radio"
@@ -123,7 +117,6 @@ const Card = ({content,deleteClass}) => {
                 onChange={handleChangeDuration}
               />
             </label>
-              
             <div className="form__buttons">
               <button onClick={handleFormSubmit}>Save</button>
               <button onClick={(e) => deleteClass(e, content.id)}>Delete</button>
