@@ -5,7 +5,7 @@ https://jsnkng.github.io/React-Interactive-Cards-Demo/
 
 ## To Do:
 - [ ] Develop API to Store/Retrieve Cards
-- [ ] Add Pagination to Cards Display
+- [X] Add Pagination to Cards Display
 - [ ] Add Pagination and Number of Results to Image Browser
 
 ## To Install
