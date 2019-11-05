@@ -52,9 +52,9 @@ const Card = ({content,deleteClass}) => {
     }
   
     return (
-      <ClassCardWrapper>
+      <CardWrapper>
         <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-          <ClassCardDisplay key="front" onClick={toggleFlip}>
+          <CardDisplay key="front" onClick={toggleFlip}>
             <Image editImage='false' featureImage={featureImage} setFeatureImage={setFeatureImage} />
             <div className="classInfo">
               <h2>{title}</h2>
@@ -65,9 +65,9 @@ const Card = ({content,deleteClass}) => {
               <span className={classType === 'live' ? 'classType live' : 'classType onDemand'}>{classType}</span>
               <span className="classDuration">{duration} min</span>
             </div>
-          </ClassCardDisplay>
+          </CardDisplay>
   
-          <ClassCardForm key="back">
+          <CardForm key="back">
             <Image editImage='true' featureImage={featureImage} setFeatureImage={setFeatureImage} />
             <label>Title: </label>
             <input 
@@ -121,19 +121,19 @@ const Card = ({content,deleteClass}) => {
               <button onClick={handleFormSubmit}>Save</button>
               <button onClick={(e) => deleteClass(e, content.id)}>Delete</button>
             </div>
-          </ClassCardForm>
+          </CardForm>
         </ReactCardFlip>
-      </ClassCardWrapper>
+      </CardWrapper>
     )
 }
   
 export default Card
 
-const ClassCardWrapper = styled.div`
+const CardWrapper = styled.div`
   width: 350px;
   margin: 5px 5px;
 `
-const ClassCardDisplay = styled.div`
+const CardDisplay = styled.div`
   min-height: 470px;
   background-color: #111111;
   border: solid 1px #cccccc;
@@ -195,7 +195,7 @@ const ClassCardDisplay = styled.div`
     margin: 0 5px 0 0;
   }    
 `
-const ClassCardForm = styled.div`
+const CardForm = styled.div`
   min-height: 470px;  
   background-color: #ffffff;
   border: solid 1px #cccccc;
