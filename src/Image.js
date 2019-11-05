@@ -1,29 +1,44 @@
 import React, { useState } from 'react';
 import Modal from 'styled-react-modal';
+import ReactPaginate from 'react-paginate';
 
 const Image = ({editImage, featureImage, setFeatureImage}) => {
-    const [images, setImages] = useState([])
     const [isOpen, setIsOpen] = useState(false)
     const [search, setSearch] = useState('')
+    const [images, setImages] = useState([])
+
+    const [itemsCountPerPage, setItemsCountPerPage] = useState(10)
+    const [itemsCountTotal, setItemsCountTotal] = useState(0)
     
-    const handleSearch = (e) => { 
+    const toggleModal = (e) => {
+      setIsOpen(!isOpen)
+      e.preventDefault()
+    }
+    const handleSearchChange = (e) => { 
       const value = e.target.value
       setSearch(value)
     }
-
-    const toggleModal = (e) => {
-      setIsOpen(!isOpen)
-      e.preventDefault();
+    const handleItemsCountPerPageChange = (e) => { 
+      const value = e.target.value
+      setItemsCountPerPage(value)
     }
-
-    const fetchImages = (e) => {
-      e.preventDefault();
-      fetch('https://api.unsplash.com/search/photos?page=1&query='+ search +'&client_id=cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f&per_page=16')
+    const handlePageChange = (data) => {
+      fetchImages(data.selected)
+    }
+    const handleFormSubmit = (e) => {
+      e.preventDefault()
+      fetchImages(0)
+    }
+    const fetchImages = (page) => {
+      let activePage = page + 1;
+      fetch('https://api.unsplash.com/search/photos?query='+ search + '&page=' + activePage + '&per_page=' + itemsCountPerPage + '&client_id=cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f')
       .then(res => res.json())
       .then(data => {
+        console.log(data)
+        setItemsCountTotal(data.total_pages)
         setImages(data.results)
       }).catch(err => {
-        console.log('Error happened during fetching!', err);
+        console.log('Error happened during fetching!', err)
       });
     }
 
@@ -58,14 +73,19 @@ const Image = ({editImage, featureImage, setFeatureImage}) => {
           
           <div className="container__changeImage_search">
             <h2>Find a Picture</h2>
-            <form>
+            <form onSubmit={handleFormSubmit}>
             <input
               type="text"
               name="search"
               value={search}
-              onChange={handleSearch}
+              onChange={handleSearchChange}
             />
-            <button onClick={fetchImages}>Search</button>
+            <select value={itemsCountPerPage} onChange={handleItemsCountPerPageChange}>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+            </select>
+            <button>Search</button>
             </form>
           </div>
           <div className="container__changeImage_images">
@@ -86,6 +106,19 @@ const Image = ({editImage, featureImage, setFeatureImage}) => {
               }
             </div>
           </div>
+          <ReactPaginate
+            previousLabel={'<<'}
+            nextLabel={'>>'}
+            breakLabel={'...'}
+            breakClassName={'break-me'}
+            pageCount={itemsCountTotal}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={handlePageChange}
+            containerClassName={'pagination'}
+            subContainerClassName={'pages pagination'}
+            activeClassName={'active'}
+          />
         </StyledModal>
 
       </div>
@@ -101,10 +134,12 @@ const StyledModal = Modal.styled`
   height: 90%;
   max-width: 960px;
   max-height: 800px;
+  padding: 10px;
   background-color: #d1d1d1;
   border-radius: 16px;
   z-index: 40;
   box-shadow: 3px 3px 3px 0px rgba(0,0,0,.5);
+  overflow: auto;
 
   & .container__changeImage_close {
     position: absolute;
@@ -135,4 +170,26 @@ const StyledModal = Modal.styled`
     padding: 3px;
     margin: 0 5px;
   }
+
+  & .pagination {
+    margin: 0;
+    padding: 0;
+  }
+  & .pagination ul {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+  }
+
+  & .pagination li {
+      display: inline-block;
+      font-size: 1.125em;
+      font-wieght: 500;
+      padding: 0 3px;
+      margin: 5px;
+      border: 1px solid #bdbdbd;
+      background-color: #c8c8c8;
+      cursor: pointer;
+  }
+
 `

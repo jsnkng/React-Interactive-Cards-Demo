@@ -8,6 +8,7 @@
     "react": "^16.10.2",
     "react-card-flip": "^0.8.1",
     "react-dom": "^16.10.2",
+    "react-paginate": "^6.3.2",
     "react-scripts": "3.2.0",
     "styled-components": "^4.4.0",
     "styled-react-modal": "^2.0.0"
