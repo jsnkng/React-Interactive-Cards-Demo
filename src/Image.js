@@ -34,7 +34,6 @@ const Image = ({editImage, featureImage, setFeatureImage}) => {
       fetch('https://api.unsplash.com/search/photos?query='+ search + '&page=' + activePage + '&per_page=' + itemsCountPerPage + '&client_id=cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f')
       .then(res => res.json())
       .then(data => {
-        console.log(data)
         setItemsCountTotal(data.total_pages)
         setImages(data.results)
       }).catch(err => {
@@ -72,53 +71,49 @@ const Image = ({editImage, featureImage, setFeatureImage}) => {
           <button className="container__changeImage_close" onClick={toggleModal}>X</button>
           
           <div className="container__changeImage_search">
-            <h2>Find a Picture</h2>
+            <h2>Picture Search</h2>
             <form onSubmit={handleFormSubmit}>
-            <input
+            <label>Keyword(s)<input
               type="text"
               name="search"
               value={search}
               onChange={handleSearchChange}
-            />
-            <select value={itemsCountPerPage} onChange={handleItemsCountPerPageChange}>
+            /></label>
+            <label>Results per Page<select value={itemsCountPerPage} onChange={handleItemsCountPerPageChange}>
               <option value="10">10</option>
               <option value="20">20</option>
               <option value="30">30</option>
-            </select>
-            <button>Search</button>
+            </select></label>
+            <button>Go</button>
             </form>
+            <ReactPaginate
+              previousLabel={'<<'}
+              nextLabel={'>>'}
+              breakLabel={'...'}
+              breakClassName={'break-me'}
+              pageCount={itemsCountTotal}
+              marginPagesDisplayed={1}
+              pageRangeDisplayed={3}
+              onPageChange={handlePageChange}
+              containerClassName={'pagination'}
+              subContainerClassName={'pages pagination'}
+              activeClassName={'active'}
+            />
           </div>
           <div className="container__changeImage_images">
-            <div className="container__changeImage_flex">
               {
-                images.map(img => <div key={img.id} style={{ backgroundImage: 'url(' + img.urls.thumb + ')', 
-                  backgroundSize: 'cover', 
-                  backgroundPosition: 'center center',
-                  backgroundRepeat: 'no-repeat',
-                  width: '140px',
-                  height: '100px',
-                  cursor: 'pointer'
-                  }} onClick={(e) => {
+                images.map(img => <div 
+                  key={img.id} 
+                  style={{ backgroundImage: 'url(' + img.urls.thumb + ')'}} 
+                  className='container__changeImage_image' 
+                  onClick={(e) => {
                     setFeatureImage(img.urls.regular) 
                     toggleModal(e) 
                   }
                 }></div>)
               }
-            </div>
           </div>
-          <ReactPaginate
-            previousLabel={'<<'}
-            nextLabel={'>>'}
-            breakLabel={'...'}
-            breakClassName={'break-me'}
-            pageCount={itemsCountTotal}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={5}
-            onPageChange={handlePageChange}
-            containerClassName={'pagination'}
-            subContainerClassName={'pages pagination'}
-            activeClassName={'active'}
-          />
+          
         </StyledModal>
 
       </div>
@@ -131,14 +126,14 @@ export default Image
 const StyledModal = Modal.styled`
   position:absolute;
   width: 90%;
-  height: 90%;
+  height: auto;
   max-width: 960px;
   max-height: 800px;
-  padding: 10px;
-  background-color: #d1d1d1;
-  border-radius: 16px;
+  background-color: #333333;
+  color: #ffffff;
+  border-radius: 8px;
   z-index: 40;
-  box-shadow: 3px 3px 3px 0px rgba(0,0,0,.5);
+  box-shadow: 3px 3px 12px 0px rgba(0,0,0,.25);
   overflow: auto;
 
   & .container__changeImage_close {
@@ -149,30 +144,67 @@ const StyledModal = Modal.styled`
     padding: 5px;
   }
   & .container__changeImage_images {
-    margin: 50px 10px 0;
+    display: grid; 
+    grid-template-columns: 20% 20% 20% 20% 20%;
   }
-  & .container__changeImage_flex {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+
+  & .container__changeImage_image {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    width: 100%;
+    min-height: 120px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 620px)  {
+    & .container__changeImage_images {
+      display: grid; 
+      grid-template-columns: 50% 50%;
+    }
+  }
+  @media (max-width: 350px)  {
+    & .container__changeImage_images {
+      display: grid; 
+      grid-template-columns: 100%;
+    }
   }
   & .container__changeImage_images img{
-    max-height: 90px;
-    cursor: pointer;
-    margin: 2px;
+  
   }
-  & .container__changeImage_search {    
-    width: 90%;
-    margin: 0 auto;
+  & .container__changeImage_search  {   
+    background-color: #111111; 
+    padding: 10px 0 10px 0;  
   }
-  & .container__changeImage_search input {    
-    font-size: 1.125em;
-    padding: 3px;
+  & .container__changeImage_search h2 {    
+    display: inline-block;
+    font-size: 1em;
+    margin: 10px 0 10px 0;
+  }
+  & .container__changeImage_search label {    
+    display: inline-block;
+    font-size: .75em;
+    margin: 5px;
+  }
+  & .container__changeImage_search input {  
+    background-color: #242424;  
+    color: #ffffff;
+    border: 0;
+    font-size: 1.5em;
+    padding: 6px;
+    margin: 0 5px;
+  }
+  & .container__changeImage_search select {    
+    background-color: #242424;  
+    color: #ffffff;
+    border: 0;
+    font-size: 1.5em;
+    padding: 6px;
     margin: 0 5px;
   }
 
   & .pagination {
-    margin: 0;
+    margin: 15px 0;
     padding: 0;
   }
   & .pagination ul {
@@ -182,14 +214,16 @@ const StyledModal = Modal.styled`
   }
 
   & .pagination li {
-      display: inline-block;
-      font-size: 1.125em;
-      font-wieght: 500;
-      padding: 0 3px;
-      margin: 5px;
-      border: 1px solid #bdbdbd;
-      background-color: #c8c8c8;
-      cursor: pointer;
+    display: inline-block;
+    background-color: #111111;
+    color: #ffffff;
+    font-size: 1em;
+    font-weight: 500;
+    border: 3px solid #333333;
+    border-radius: 3px;
+    padding: 1px 4px;
+    margin: 3px;
+    cursor: pointer;
   }
 
 `

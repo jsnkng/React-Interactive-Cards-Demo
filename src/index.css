@@ -16,23 +16,23 @@ code {
     monospace;
 }
 button {
-	background: linear-gradient(to bottom, #000000 5%, #332b33 100%);
+	background: linear-gradient(to bottom, #000000 5%, #333333 100%);
 	background-color: #000000;
-	border-radius: 3px;
-	border: 1px solid #000000;
+	border-radius: 2px;
+	border: 1px solid #111111;
 	display: inline-block;
 	cursor: pointer;
 	color: #ffffff;
 	font-family: "Droid Sans", "Helvetica Neue", sans-serif;
 	font-size: 12px;
 	font-weight: bold;
-  padding: 6px 20px;
-  margin: 0 5px;
+  	padding: 6px 20px;
+  	margin: 0 5px;
 	text-decoration: none;
 }
 button:hover {
-	background: linear-gradient(to bottom, #332b33 5%, #000000 100%);
-	background-color: #332b33;
+	background: linear-gradient(to bottom, #111111 5%, #000000 100%);
+	background-color: #333333;
 }
 button:active {
 	position: relative;
