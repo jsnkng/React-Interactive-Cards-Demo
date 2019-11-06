@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "9159dc4f43c5105cbdd1efc5a1b2c43e",
+    "revision": "6223ca1b64c80473cf97864b21ffe066",
     "url": "/React-Interactive-Cards-Demo/index.html"
   },
   {
