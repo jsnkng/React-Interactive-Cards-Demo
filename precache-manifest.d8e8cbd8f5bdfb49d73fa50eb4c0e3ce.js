@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6223ca1b64c80473cf97864b21ffe066",
+    "revision": "2996a017375dc90e23f95e621cbc93a9",
     "url": "/React-Interactive-Cards-Demo/index.html"
   },
   {
-    "revision": "5b7cff1d34eda8f0e867",
+    "revision": "09f03f4d32a2e3d3e900",
     "url": "/React-Interactive-Cards-Demo/static/css/main.5e78f494.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/React-Interactive-Cards-Demo/static/js/2.bc91480a.chunk.js"
   },
   {
-    "revision": "5b7cff1d34eda8f0e867",
-    "url": "/React-Interactive-Cards-Demo/static/js/main.63c37cc5.chunk.js"
+    "revision": "09f03f4d32a2e3d3e900",
+    "url": "/React-Interactive-Cards-Demo/static/js/main.d2ba9ca9.chunk.js"
   },
   {
     "revision": "20cb4529959495f95ca7",
