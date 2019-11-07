@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/React-Interactive-Cards-Demo/static/css/main.5e78f494.chunk.css",
-    "main.js": "/React-Interactive-Cards-Demo/static/js/main.d2ba9ca9.chunk.js",
-    "main.js.map": "/React-Interactive-Cards-Demo/static/js/main.d2ba9ca9.chunk.js.map",
+    "main.js": "/React-Interactive-Cards-Demo/static/js/main.a40b7347.chunk.js",
+    "main.js.map": "/React-Interactive-Cards-Demo/static/js/main.a40b7347.chunk.js.map",
     "runtime-main.js": "/React-Interactive-Cards-Demo/static/js/runtime-main.a615aca9.js",
     "runtime-main.js.map": "/React-Interactive-Cards-Demo/static/js/runtime-main.a615aca9.js.map",
     "static/js/2.bc91480a.chunk.js": "/React-Interactive-Cards-Demo/static/js/2.bc91480a.chunk.js",
     "static/js/2.bc91480a.chunk.js.map": "/React-Interactive-Cards-Demo/static/js/2.bc91480a.chunk.js.map",
     "index.html": "/React-Interactive-Cards-Demo/index.html",
-    "precache-manifest.d8e8cbd8f5bdfb49d73fa50eb4c0e3ce.js": "/React-Interactive-Cards-Demo/precache-manifest.d8e8cbd8f5bdfb49d73fa50eb4c0e3ce.js",
+    "precache-manifest.e55763b4c65574ecf3a16cb3ed1f8dbe.js": "/React-Interactive-Cards-Demo/precache-manifest.e55763b4c65574ecf3a16cb3ed1f8dbe.js",
     "service-worker.js": "/React-Interactive-Cards-Demo/service-worker.js",
     "static/css/main.5e78f494.chunk.css.map": "/React-Interactive-Cards-Demo/static/css/main.5e78f494.chunk.css.map"
   },
@@ -16,6 +16,6 @@
     "static/js/runtime-main.a615aca9.js",
     "static/js/2.bc91480a.chunk.js",
     "static/css/main.5e78f494.chunk.css",
-    "static/js/main.d2ba9ca9.chunk.js"
+    "static/js/main.a40b7347.chunk.js"
   ]
 }
