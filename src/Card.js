@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Image from './Image';
 import ReactCardFlip from 'react-card-flip';
 
-const Card = ({content,deleteClass}) => {
+const Card = ({content,deleteCard}) => {
     const [featureImage, setFeatureImage] = useState(content.featureImage)
     const [title, setTitle] = useState(content.title)
     const [instructor, setInstructor] = useState(content.instructor)
@@ -54,8 +54,9 @@ const Card = ({content,deleteClass}) => {
     return (
       <CardWrapper>
         <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
+          
           <CardDisplay key="front" onClick={toggleFlip}>
-            <Image editImage='false' featureImage={featureImage} setFeatureImage={setFeatureImage} />
+            <Image editable='false' featureImage={featureImage} setFeatureImage={setFeatureImage} />
             <div className="classInfo">
               <h2>{title}</h2>
               <h3>{instructor}</h3>
@@ -68,7 +69,7 @@ const Card = ({content,deleteClass}) => {
           </CardDisplay>
   
           <CardForm key="back">
-            <Image editImage='true' featureImage={featureImage} setFeatureImage={setFeatureImage} />
+            <Image editable='true' featureImage={featureImage} setFeatureImage={setFeatureImage} />
             <label>Title: </label>
             <input 
               type="text"
@@ -119,7 +120,7 @@ const Card = ({content,deleteClass}) => {
             </label>
             <div className="form__buttons">
               <button onClick={handleFormSubmit}>Save</button>
-              <button onClick={(e) => deleteClass(e, content.id)}>Delete</button>
+              <button onClick={(e) => deleteCard(e, content.id)}>Delete</button>
             </div>
           </CardForm>
         </ReactCardFlip>
