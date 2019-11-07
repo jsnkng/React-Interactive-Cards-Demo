@@ -4,14 +4,21 @@ import { ModalProvider } from 'styled-react-modal';
 import classList from './classes';
 import NavBar from './NavBar';
 import Card from './Card';
+import Modal from 'styled-react-modal';
 
 const App = () => {
-    const [classes, setClasses] = useState(classList)
+    const [cards, setCards] = useState(classList)
+    const [isHelpOpen, setIsHelpOpen] = useState(false)
+    
+    const toggleIsHelpOpen = () => {
+      setIsHelpOpen(!isHelpOpen)
+    }
 
     const createClass = () => {
-      const lastItem = classes.reverse().slice(-1).pop();
-      const lastId = lastItem.id + 1;
-      const newClasses = [...classes, {
+      const lastItem = cards.reverse().slice(-1).pop();
+      const lastId = lastItem ? lastItem.id + 1 : 1;
+     
+      const newCards = [...cards, {
         id: lastId,
         title: "New Class",
         instructor: "Click on a card to edit it.",
@@ -20,30 +27,44 @@ const App = () => {
         featureImage: "https://via.placeholder.com/500/000000/ffffff/?text=Choose+a+Picture",
         classType: "Type"
       }]
-      setClasses(newClasses)
+      setCards(newCards)
     }
 
-    const deleteClass = (e, id) => {
-      if (window.confirm('Are you sure you wish to delete this class?\nClick OK to delete class or Cancel to go back.')) {
-        let index = classes.findIndex(klass => klass.id === id)
-        classes.splice(index, 1)
-        let newClasses = [...classes.reverse()]
-        setClasses(newClasses)
+    const deleteCard = (e, id) => {
+      if (window.confirm('Are you sure you want to do this?\nOK to delete or Cancel to go back.')) {
+        let index = cards.findIndex(item => item.id === id)
+        cards.splice(index, 1)
+        let newCards = [...cards.reverse()]
+        setCards(newCards)
       } 
       e.preventDefault();
     }
 
     return (
       <Wrapper>
-        <NavBar />
-        <h1>Interactive Cards</h1>
-        <p>Click on a Card to edit it.</p>
-        <button onClick={createClass}>+ New Card</button>
+        <NavBar createClass={createClass} toggleIsHelpOpen={toggleIsHelpOpen} />
+        
         <ModalProvider backgroundComponent={SpecialModalBackground}>
+          
           <CardContainer>
-            {classes.reverse().map(klass => <Card key={klass.id} content={klass} deleteClass={deleteClass} />)}
+            {cards.reverse().map(item => <Card key={item.id} content={item} deleteCard={deleteCard} />)}
           </CardContainer>
+
+          <StyledModal
+            isOpen={isHelpOpen}
+            onBackgroundClick={toggleIsHelpOpen}
+            onEscapeKeydown={toggleIsHelpOpen}>
+            <button className="container__help_close" onClick={toggleIsHelpOpen}>Close</button>
+            <div className="container__help_body">
+              <h2>Help</h2>
+              <p>To Create: Click on the "+" button.</p>
+              <p>To Update: Click on any card to edit it's content.</p>
+              <p>To Delete: Click on a card and then click the Delete button and confirm.</p>
+            </div>
+          </StyledModal>
+
         </ModalProvider>
+
       </Wrapper>
     )
 }
@@ -62,7 +83,6 @@ const CardContainer = styled.div`
   justify-content: center;
   margin: 20px;
 `
-
 const SpecialModalBackground = styled.div`
   display: flex;
   position: fixed;
@@ -75,4 +95,29 @@ const SpecialModalBackground = styled.div`
   z-index: 30;
   background-color: rgba(0,0,0,.5);
 `
+const StyledModal = Modal.styled`
+  position:absolute;
+  width: 90%;
+  height: auto;
+  max-width: 960px;
+  max-height: 800px;
+  background-color: #333333;
+  color: #ffffff;
+  border-radius: 8px;
+  z-index: 40;
+  box-shadow: 3px 3px 12px 0px rgba(0,0,0,.25);
+  overflow: auto;
 
+  @media (max-width: 414px)  {
+    width: 100vw;
+    height: 100vh;
+    max-height: 1400px;
+    border-radius: 0px !important;
+  }
+  & .container__help_close {
+    position: absolute;
+    top: 15px;
+    right: 13px;
+    padding: 5px 10px;
+  }
+`
