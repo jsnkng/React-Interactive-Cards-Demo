@@ -1,151 +1,247 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import styled from 'styled-components';
 import Modal from 'styled-react-modal';
 import ReactPaginate from 'react-paginate';
 
-const Image = ({editImage, featureImage, setFeatureImage}) => {
-    const [isOpen, setIsOpen] = useState(false)
-    const [search, setSearch] = useState('')
+const Image = ({editable=false, featureImage, setFeatureImage}) => {
+    const [isSearchOpen, setIsSearchOpen] = useState(false)
+    const [searchTerm, setSearchTerm] = useState('')
+    const [activePage, setActivePage] = useState(0)
+    const itemsCountPerPage = 16
     const [images, setImages] = useState([])
-
-    const [itemsCountPerPage, setItemsCountPerPage] = useState(10)
     const [itemsCountTotal, setItemsCountTotal] = useState(0)
+    const fetchImages = useCallback(
+      () => {
+        let page = activePage + 1
+        let term
+        if(!searchTerm) {
+          const terms = ['purple', 'red', 'orange', 'teal','green', 'gold', 'blue', 'pink','grey', 'black']
+          let random = Math.floor((Math.random() * 10) + 1);
+          term = terms[random]
+          setSearchTerm(term)
+        } else {
+          term = searchTerm
+        }
+        const client_id = 'cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f'
+        const queryString = `client_id=${client_id}&query=${term}&page=${page}&per_page=${itemsCountPerPage}`
     
-    const toggleModal = (e) => {
-      setIsOpen(!isOpen)
+        fetch(`https://api.unsplash.com/search/photos?${queryString}`)
+        .then(res => res.json())
+        .then(data => {
+          setItemsCountTotal(data.total_pages)
+          setImages(data.results)
+        }).catch(err => {
+          console.log('Error happened during fetching!', err)
+        })
+      },
+      [searchTerm, itemsCountPerPage, activePage],
+    );
+    useEffect(() => { if(isSearchOpen) fetchImages()}, [isSearchOpen,fetchImages,itemsCountPerPage, activePage])
+
+    const toggleSearchModal = (e) => {
       e.preventDefault()
+      setIsSearchOpen(!isSearchOpen)
     }
-    const handleSearchChange = (e) => { 
+    const handleSearchTermChange = (e) => { 
+      
       const value = e.target.value
-      setSearch(value)
+      setSearchTerm(value) 
     }
-    const handleItemsCountPerPageChange = (e) => { 
-      const value = e.target.value
-      setItemsCountPerPage(value)
-    }
-    const handlePageChange = (data) => {
-      fetchImages(data.selected)
+
+    const handleActivePageChange = (data) => {
+      const value = data.selected
+      setActivePage(value)
     }
     const handleFormSubmit = (e) => {
-      e.preventDefault()
-      fetchImages(0)
+      e.preventDefault();
+      setActivePage(0)
+      fetchImages()
     }
-    const fetchImages = (page) => {
-      let activePage = page + 1;
-      fetch('https://api.unsplash.com/search/photos?query='+ search + '&page=' + activePage + '&per_page=' + itemsCountPerPage + '&client_id=cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f')
-      .then(res => res.json())
-      .then(data => {
-        setItemsCountTotal(data.total_pages)
-        setImages(data.results)
-      }).catch(err => {
-        console.log('Error happened during fetching!', err)
-      });
-    }
-
-    const launchModalButton = (edit) => {
-      if(edit==='true') {
+    const drawEditImageButton = (editable) => {
+      if(editable==='true') {
         return (
-          <button onClick={toggleModal}>Change Picture</button>
+          <button onClick={toggleSearchModal}>Choose Image</button>
         )
       }
     }
 
     return (
-      <div>
+      <div className="container__changeImage">
         
-        <div className="container__changeImage">
-          {launchModalButton(editImage)}
-          <div style={{ backgroundImage: 'url(' + featureImage + ')', 
-              backgroundSize: 'cover', 
-              backgroundPosition: 'center center',
-              backgroundRepeat: 'no-repeat',
-              width: '100%',
-              height: '200px',
-              marginBottom: '10px'
-            }}></div>
-        </div>
+        {/* Conditionally draws edit image button if editable is true. */}
+        {drawEditImageButton(editable)}
+        
+        {/* Styled Component to draw an image. */}
+        <ResponsiveImage backgroundURL={featureImage} height="200px"></ResponsiveImage>
 
-        <StyledModal
-          isOpen={isOpen}
-          onBackgroundClick={toggleModal}
-          onEscapeKeydown={toggleModal}>
-          <button className="container__changeImage_close" onClick={toggleModal}>X</button>
+        {/* Styled React Modal Component to contain search API UI */}
+        <SearchModal
+          isOpen={isSearchOpen}
+          onBackgroundClick={toggleSearchModal}
+          onEscapeKeydown={toggleSearchModal}>
           
+          {/* Close Modal button */}
+          <div className="container__changeImage_close">
+            <button onClick={toggleSearchModal}>X</button>
+          </div>
+          {/* Search Images fields */}
           <div className="container__changeImage_search">
-            <h2>Picture Search</h2>
+            <h2>Image Library</h2>
             <form onSubmit={handleFormSubmit}>
-            <label>Keyword(s)<input
-              type="text"
-              name="search"
-              value={search}
-              onChange={handleSearchChange}
-            /></label>
-            <label>Results per Page<select value={itemsCountPerPage} onChange={handleItemsCountPerPageChange}>
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="30">30</option>
-            </select></label>
-            <button>Go</button>
+              <label>Keyword(s)<br />
+                <input
+                  type="text"
+                  name="searchTerm"
+                  value={searchTerm}
+                  onChange={handleSearchTermChange}
+                />
+              </label>
+
+              <button type="submit">Search</button>
             </form>
+          </div>
+
+          {/* Image API search results. */}
+          <div className="container__changeImage_images">
+              {
+                images.map(img => <ResponsiveImage  height="100px"
+                  key={img.id} 
+                  backgroundURL={img.urls.thumb} 
+                  className='container__changeImage_image' 
+                  onClick={(e) => {
+                    setFeatureImage(img.urls.regular) 
+                    toggleSearchModal(e) 
+                  }
+                }></ResponsiveImage>)
+              }
+          </div>
+          
+          {/* Pagination for image API search results. */}
+          <div className="container__changeImage_pagination">
             <ReactPaginate
               previousLabel={'<<'}
               nextLabel={'>>'}
               breakLabel={'...'}
               breakClassName={'break-me'}
-              pageCount={itemsCountTotal}
+              pageCount={itemsCountTotal/itemsCountPerPage}
               marginPagesDisplayed={1}
               pageRangeDisplayed={3}
-              onPageChange={handlePageChange}
+              onPageChange={handleActivePageChange}
               containerClassName={'pagination'}
               subContainerClassName={'pages pagination'}
               activeClassName={'active'}
             />
+            {itemsCountTotal} Images found.<br />
+            Page {activePage+1} of {Math.ceil(itemsCountTotal/itemsCountPerPage)}
           </div>
-          <div className="container__changeImage_images">
-              {
-                images.map(img => <div 
-                  key={img.id} 
-                  style={{ backgroundImage: 'url(' + img.urls.thumb + ')'}} 
-                  className='container__changeImage_image' 
-                  onClick={(e) => {
-                    setFeatureImage(img.urls.regular) 
-                    toggleModal(e) 
-                  }
-                }></div>)
-              }
-          </div>
-          
-        </StyledModal>
-
+        </SearchModal>
       </div>
     )
 }
   
 export default Image
 
-
-const StyledModal = Modal.styled`
+const ResponsiveImage = styled.div`
+  background-image: url(${props => props.backgroundURL});
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: ${props => props.height};
+`
+const SearchModal = Modal.styled`
   position:absolute;
-  width: 90%;
-  height: auto;
-  max-width: 960px;
-  max-height: 800px;
-  background-color: #333333;
+  background-color: #111111; 
   color: #ffffff;
-  border-radius: 8px;
   z-index: 40;
-  box-shadow: 3px 3px 12px 0px rgba(0,0,0,.25);
-  overflow: auto;
+  width: 100vw;
+  height: 100vh;
+  max-height: 1400px;
+  
+
+  button {
+    background: transparent;
+    background-color: #0a0a0a; 
+    border-radius: 2px;
+    border: 1px solid #2f2f2f;
+    display: inline-block;
+    cursor: pointer;
+    color: #ffffff;
+    font-family: "Droid Sans", "Helvetica Neue", sans-serif;
+    font-size: .75em;
+    font-weight: bold;
+    padding: 4px 18px;
+    margin: 0 5px;
+    text-decoration: none;
+  }
+  button:hover {
+    background: linear-gradient(to bottom, #111111 5%, #000000 100%);
+    background-color: #333333;
+  }
+  button:active {
+    position: relative;
+    top: 1px;
+  }
+
 
   & .container__changeImage_close {
     position: absolute;
-    top: 15px;
-    right: 13px;
-    width: 30px;
-    padding: 5px;
+    top: 8px;
+    right: 3px;
+    padding: 4px 8px;
   }
+
+  & .container__changeImage_search  {   
+    margin: 0;
+    text-align: left;
+    
+    h2 {    
+      display: block;
+      font-size: 1.25em;
+      font-weight: 200;
+      text-align: left;
+      margin: 10px; 
+    }
+    form {
+      background-color: #1f1f1f;
+      padding: 10px  
+      // box-shadow: 3px 3px 2px 3px rgba(0,0,0,.5);
+    }
+    label {
+      display: inline-block;
+      font-size: .75em;
+      font-weight: 200;
+      text-align: left;
+      padding: 5px;
+      margin: 0;
+    }
+    input {  
+      display: inline-block;
+      background-color: #2f2f2f;  
+      color: #ffffff;
+      font-size: 1em;
+      border: 0;
+      border-radius: 5px;
+      padding: 5px;
+      margin: 2px 0 0 0;
+    }
+    select {    
+      background-color: #2f2f2f;  
+      color: #ffffff;
+      font-size: 1em;
+      border: 0;
+      padding: 4px;
+      margin: 2px 0 0 0;
+    }
+  }
+
+
   & .container__changeImage_images {
-    display: grid; 
-    grid-template-columns: 20% 20% 20% 20% 20%;
+    display: grid;       grid-template-columns: 25% 25% 25% 25%;
+
+    min-height: 480px;
+    max-height: 480px;
+    overflow: scroll;
   }
 
   & .container__changeImage_image {
@@ -156,55 +252,15 @@ const StyledModal = Modal.styled`
     min-height: 120px;
     cursor: pointer;
   }
-
-  @media (max-width: 620px)  {
-    & .container__changeImage_images {
-      display: grid; 
-      grid-template-columns: 50% 50%;
-    }
-  }
-  @media (max-width: 350px)  {
-    & .container__changeImage_images {
-      display: grid; 
-      grid-template-columns: 100%;
-    }
-  }
-  & .container__changeImage_images img{
-  
-  }
-  & .container__changeImage_search  {   
-    background-color: #111111; 
-    padding: 10px 0 10px 0;  
-  }
-  & .container__changeImage_search h2 {    
-    display: inline-block;
-    font-size: 1em;
-    margin: 10px 0 10px 0;
-  }
-  & .container__changeImage_search label {    
-    display: inline-block;
+  & .container__changeImage_pagination {
+    position: relative;
     font-size: .75em;
-    margin: 5px;
-  }
-  & .container__changeImage_search input {  
-    background-color: #242424;  
-    color: #ffffff;
-    border: 0;
-    font-size: 1.5em;
-    padding: 6px;
-    margin: 0 5px;
-  }
-  & .container__changeImage_search select {    
-    background-color: #242424;  
-    color: #ffffff;
-    border: 0;
-    font-size: 1.5em;
-    padding: 6px;
-    margin: 0 5px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   & .pagination {
-    margin: 15px 0;
+    margin: 15px margin;
     padding: 0;
   }
   & .pagination ul {
@@ -217,13 +273,48 @@ const StyledModal = Modal.styled`
     display: inline-block;
     background-color: #111111;
     color: #ffffff;
-    font-size: 1em;
     font-weight: 500;
-    border: 3px solid #333333;
+    border: 1px solid #2f2f2f;
     border-radius: 3px;
-    padding: 1px 4px;
+    padding: 3px 5px;
     margin: 3px;
     cursor: pointer;
   }
 
+  @media (min-width: 415px)  {
+
+    width: 100vw;
+    height: 100vh;
+
+    & .container__changeImage_images {
+      grid-template-columns: 25% 25% 25% 25%;
+      height: 100%;
+      max-height: 480px;
+    }
+  }
+  @media (min-width: 768px)  {
+
+    width: 90vw;
+    height: 90vh;
+    box-shadow: 3px 3px 12px 0px rgba(0,0,0,.25);
+  
+    
+    & .container__changeImage_images {
+      height: 100%;
+      max-height: 480px;
+    }
+  }
+
+  @media (min-width: 1200px)  {
+
+    width: 70vw;
+    height: 90vh;
+    box-shadow: 3px 3px 12px 0px rgba(0,0,0,.25);
+  
+    
+    & .container__changeImage_images {
+      height: 100%;
+      max-height: 480px;
+    }
+  }
 `
