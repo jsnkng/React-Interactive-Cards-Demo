@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Image from './Image';
+import Image from './modals/ModalImageSearch';
 import ReactCardFlip from 'react-card-flip';
 
-const Card = ({content,deleteCard}) => {
-    const [featureImage, setFeatureImage] = useState(content.featureImage)
-    const [title, setTitle] = useState(content.title)
-    const [instructor, setInstructor] = useState(content.instructor)
-    const [description, setDescription] = useState(content.description)
-    const [duration, setDuration] = useState(content.duration)
-    const [classType, setClassType] = useState(content.classType)
+const Card = ({data, updateCard, deleteCard}) => {
+    const [featureImage, setFeatureImage] = useState(data.featureImage)
+    const [title, setTitle] = useState(data.title)
+    const [instructor, setInstructor] = useState(data.instructor)
+    const [description, setDescription] = useState(data.description)
+    const [duration, setDuration] = useState(data.duration)
+    const [classType, setClassType] = useState(data.classType)
     const [isFlipped, setIsFlipped] = useState(false)
   
     const toggleFlip = (e) => {
@@ -41,14 +41,13 @@ const Card = ({content,deleteCard}) => {
       setClassType(value)
     }
 
-    const handleFormSubmit = (e) => {
+    const handleFormSubmit = () => {
       setTitle(title)
       setInstructor(instructor)
       setDescription(description)
       setDuration(duration)
       setClassType(classType)
       setIsFlipped(false)
-      e.preventDefault();
     }
   
     return (
@@ -120,7 +119,7 @@ const Card = ({content,deleteCard}) => {
             </label>
             <div className="form__buttons">
               <button onClick={handleFormSubmit}>Save</button>
-              <button onClick={(e) => deleteCard(e, content.id)}>Delete</button>
+              <button onClick={() => deleteCard(data.id)}>Delete</button>
             </div>
           </CardForm>
         </ReactCardFlip>

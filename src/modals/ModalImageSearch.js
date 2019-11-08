@@ -10,20 +10,17 @@ const Image = ({editable=false, featureImage, setFeatureImage}) => {
     const itemsCountPerPage = 16
     const [images, setImages] = useState([])
     const [itemsCountTotal, setItemsCountTotal] = useState(0)
+   
+    useEffect(() => {
+      if(searchTerm) fetchImages()
+    }, [activePage])
+
     const fetchImages = useCallback(
       () => {
         let page = activePage + 1
-        let term
-        if(!searchTerm) {
-          const terms = ['purple', 'red', 'orange', 'teal','green', 'gold', 'blue', 'pink','grey', 'black']
-          let random = Math.floor((Math.random() * 10) + 1);
-          term = terms[random]
-          setSearchTerm(term)
-        } else {
-          term = searchTerm
-        }
+        
         const client_id = 'cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f'
-        const queryString = `client_id=${client_id}&query=${term}&page=${page}&per_page=${itemsCountPerPage}`
+        const queryString = `client_id=${client_id}&query=${searchTerm}&page=${page}&per_page=${itemsCountPerPage}`
     
         fetch(`https://api.unsplash.com/search/photos?${queryString}`)
         .then(res => res.json())
@@ -33,27 +30,22 @@ const Image = ({editable=false, featureImage, setFeatureImage}) => {
         }).catch(err => {
           console.log('Error happened during fetching!', err)
         })
-      },
-      [searchTerm, itemsCountPerPage, activePage],
-    );
-    useEffect(() => { if(isSearchOpen) fetchImages()}, [isSearchOpen,fetchImages,itemsCountPerPage, activePage])
+      }, [activePage, searchTerm])
 
     const toggleSearchModal = (e) => {
       e.preventDefault()
       setIsSearchOpen(!isSearchOpen)
     }
     const handleSearchTermChange = (e) => { 
-      
       const value = e.target.value
       setSearchTerm(value) 
     }
-
     const handleActivePageChange = (data) => {
       const value = data.selected
       setActivePage(value)
     }
     const handleFormSubmit = (e) => {
-      e.preventDefault();
+      if(e) e.preventDefault();
       setActivePage(0)
       fetchImages()
     }
@@ -64,7 +56,7 @@ const Image = ({editable=false, featureImage, setFeatureImage}) => {
         )
       }
     }
-
+   
     return (
       <div className="container__changeImage">
         
@@ -158,39 +150,12 @@ const SearchModal = Modal.styled`
   height: 100vh;
   max-height: 1400px;
   
-
-  button {
-    background: transparent;
-    background-color: #0a0a0a; 
-    border-radius: 2px;
-    border: 1px solid #2f2f2f;
-    display: inline-block;
-    cursor: pointer;
-    color: #ffffff;
-    font-family: "Droid Sans", "Helvetica Neue", sans-serif;
-    font-size: .75em;
-    font-weight: bold;
-    padding: 4px 18px;
-    margin: 0 5px;
-    text-decoration: none;
-  }
-  button:hover {
-    background: linear-gradient(to bottom, #111111 5%, #000000 100%);
-    background-color: #333333;
-  }
-  button:active {
-    position: relative;
-    top: 1px;
-  }
-
-
   & .container__changeImage_close {
     position: absolute;
     top: 8px;
     right: 3px;
     padding: 4px 8px;
   }
-
   & .container__changeImage_search  {   
     margin: 0;
     text-align: left;
@@ -205,7 +170,6 @@ const SearchModal = Modal.styled`
     form {
       background-color: #1f1f1f;
       padding: 10px  
-      // box-shadow: 3px 3px 2px 3px rgba(0,0,0,.5);
     }
     label {
       display: inline-block;
@@ -234,16 +198,13 @@ const SearchModal = Modal.styled`
       margin: 2px 0 0 0;
     }
   }
-
-
   & .container__changeImage_images {
-    display: grid;       grid-template-columns: 25% 25% 25% 25%;
-
+    display: grid;       
+    grid-template-columns: 25% 25% 25% 25%;
     min-height: 480px;
     max-height: 480px;
     overflow: scroll;
   }
-
   & .container__changeImage_image {
     background-size: cover;
     background-position: center center;
@@ -258,7 +219,6 @@ const SearchModal = Modal.styled`
     margin: 0 auto;
     width: 100%;
   }
-
   & .pagination {
     margin: 15px margin;
     padding: 0;
@@ -268,7 +228,6 @@ const SearchModal = Modal.styled`
     margin: 0;
     padding: 0;
   }
-
   & .pagination li {
     display: inline-block;
     background-color: #111111;
@@ -280,12 +239,9 @@ const SearchModal = Modal.styled`
     margin: 3px;
     cursor: pointer;
   }
-
   @media (min-width: 415px)  {
-
     width: 100vw;
     height: 100vh;
-
     & .container__changeImage_images {
       grid-template-columns: 25% 25% 25% 25%;
       height: 100%;
@@ -293,25 +249,17 @@ const SearchModal = Modal.styled`
     }
   }
   @media (min-width: 768px)  {
-
     width: 90vw;
     height: 90vh;
     box-shadow: 3px 3px 12px 0px rgba(0,0,0,.25);
-  
-    
     & .container__changeImage_images {
       height: 100%;
       max-height: 480px;
     }
   }
-
   @media (min-width: 1200px)  {
-
     width: 70vw;
     height: 90vh;
-    box-shadow: 3px 3px 12px 0px rgba(0,0,0,.25);
-  
-    
     & .container__changeImage_images {
       height: 100%;
       max-height: 480px;

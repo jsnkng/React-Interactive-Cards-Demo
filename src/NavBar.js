@@ -1,17 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react';
 import styled from 'styled-components'
+import ModalHelp from './modals/ModalHelp';
 
-const NavBar = ({createClass, toggleIsHelpOpen}) => {
+const NavBar = ({createCard}) => {
+
+  const [isOpenModalHelp, setIsOpenModalHelp] = useState(false)
+  
+  const toggleModalHelp = () => {
+    setIsOpenModalHelp(!isOpenModalHelp)
+  }
+
   return (
     <Header>
       <HeaderMenu>
         <HeaderItem>
-          ReactJS – Interactive Cards
-          <button onClick={createClass}>+</button>
-          <button onClick={toggleIsHelpOpen}>?</button>
+          <h1>ReactJS – Interactive Cards</h1>
+          {/* <button onClick={createCard}>+</button> */}
+          <div><button onClick={toggleModalHelp}>?</button></div>
         </HeaderItem>
       </HeaderMenu>
+      <ModalHelp isOpen={isOpenModalHelp} toggleModal={toggleModalHelp}></ModalHelp>
     </Header>
+
   )
 }
 export default NavBar
@@ -19,13 +29,13 @@ export default NavBar
 NavBar.displayName = 'NavBar'
 
 const Header = styled.header`
-  background-color: #f9f9f9;
+  background-color: #111111; 
+  color: #ffffff;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   padding: 10px 0 15px;
-  box-shadow: 0 0 5px 0 gray;
 `
 const HeaderMenu = styled.div`
   margin-top: 0px;
@@ -36,4 +46,16 @@ const HeaderItem = styled.div`
   text-align: center;
   box-sizing: border-box;
   list-style-type: none;
+
+  & h1 {
+    display: block;
+    font-size: 1.25em;
+    font-weight: 200;
+    text-align: left;
+    margin: 0 5px; 
+    float: left;
+  }
+  & div {
+    float: right;
+  }
 `
