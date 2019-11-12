@@ -3,39 +3,49 @@ import styled from 'styled-components';
 import Modal from 'styled-react-modal';
 import ReactPaginate from 'react-paginate';
 
-const Image = ({editable=false, featureImage, setFeatureImage}) => {
-    const [isSearchOpen, setIsSearchOpen] = useState(false)
+const ImageSearch = ({isSearchOpen, setIsSearchOpen, setFeatureImage, }) => {
     const [searchTerm, setSearchTerm] = useState('')
     const [activePage, setActivePage] = useState(0)
     const itemsCountPerPage = 16
     const [images, setImages] = useState([])
     const [itemsCountTotal, setItemsCountTotal] = useState(0)
-   
-    useEffect(() => {
-      if(searchTerm) fetchImages()
-    }, [activePage])
+    const [paginated, setPaginated] = useState(false)
+    // const [toggleSearch, setToggleSearch] = useState(launchSearch)
+
+    const api = (query, page, perPage) => {
+      page = page + 1
+      const url = 'https://api.unsplash.com/search/photos?'
+      const clientId = 'cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f'
+      return `${url}client_id=${clientId}&query=${query}&page=${page}&per_page=${perPage}`
+    }
+
+
 
     const fetchImages = useCallback(
-      () => {
-        let page = activePage + 1
+      (api) => {
         
-        const client_id = 'cf5f09425d6ea12bc9825551cc6c10d5e344e857f61fe94c620dfd6e8a5aba9f'
-        const queryString = `client_id=${client_id}&query=${searchTerm}&page=${page}&per_page=${itemsCountPerPage}`
-    
-        fetch(`https://api.unsplash.com/search/photos?${queryString}`)
+        
+        fetch(api)
         .then(res => res.json())
         .then(data => {
           setItemsCountTotal(data.total_pages)
+          
           setImages(data.results)
+
+          if(images) setPaginated(true);
+
         }).catch(err => {
           console.log('Error happened during fetching!', err)
         })
       }, [activePage, searchTerm])
 
-    const toggleSearchModal = (e) => {
-      e.preventDefault()
-      setIsSearchOpen(!isSearchOpen)
-    }
+
+
+    useEffect(() => {
+      if(searchTerm) fetchImages()
+    }, [activePage])
+  
+
     const handleSearchTermChange = (e) => { 
       const value = e.target.value
       setSearchTerm(value) 
@@ -49,33 +59,43 @@ const Image = ({editable=false, featureImage, setFeatureImage}) => {
       setActivePage(0)
       fetchImages()
     }
-    const drawEditImageButton = (editable) => {
-      if(editable==='true') {
+    const drawPagination = (paginated) => {
+      if(paginated===true) {
         return (
-          <button onClick={toggleSearchModal}>Choose Image</button>
+          <div className="container__changeImage_pagination">
+            <ReactPaginate
+              previousLabel={'<<'}
+              nextLabel={'>>'}
+              breakLabel={'...'}
+              breakClassName={'break-me'}
+              pageCount={itemsCountTotal/itemsCountPerPage}
+              marginPagesDisplayed={1}
+              pageRangeDisplayed={3}
+              onPageChange={handleActivePageChange}
+              containerClassName={'pagination'}
+              subContainerClassName={'pages pagination'}
+              activeClassName={'active'}
+            />
+            {itemsCountTotal} Images found.<br />
+            Page {activePage+1} of {Math.ceil(itemsCountTotal/itemsCountPerPage)}
+          </div>
         )
+      } else {
+        return null;
       }
     }
    
     return (
-      <div className="container__changeImage">
-        
-        {/* Conditionally draws edit image button if editable is true. */}
-        {drawEditImageButton(editable)}
-        
-        {/* Styled Component to draw an image. */}
-        <ResponsiveImage backgroundURL={featureImage} height="200px"></ResponsiveImage>
-
-        {/* Styled React Modal Component to contain search API UI */}
         <SearchModal
           isOpen={isSearchOpen}
-          onBackgroundClick={toggleSearchModal}
-          onEscapeKeydown={toggleSearchModal}>
+          onBackgroundClick={setIsSearchOpen(!isSearchOpen)}
+          onEscapeKeydown={setIsSearchOpen(!isSearchOpen)}>
           
           {/* Close Modal button */}
           <div className="container__changeImage_close">
-            <button onClick={toggleSearchModal}>X</button>
+            <button onClick={setIsSearchOpen(!isSearchOpen)}>X</button>
           </div>
+          
           {/* Search Images fields */}
           <div className="container__changeImage_search">
             <h2>Image Library</h2>
@@ -102,37 +122,19 @@ const Image = ({editable=false, featureImage, setFeatureImage}) => {
                   className='container__changeImage_image' 
                   onClick={(e) => {
                     setFeatureImage(img.urls.regular) 
-                    toggleSearchModal(e) 
+                    setIsSearchOpen(e) 
                   }
                 }></ResponsiveImage>)
               }
           </div>
           
           {/* Pagination for image API search results. */}
-          <div className="container__changeImage_pagination">
-            <ReactPaginate
-              previousLabel={'<<'}
-              nextLabel={'>>'}
-              breakLabel={'...'}
-              breakClassName={'break-me'}
-              pageCount={itemsCountTotal/itemsCountPerPage}
-              marginPagesDisplayed={1}
-              pageRangeDisplayed={3}
-              onPageChange={handleActivePageChange}
-              containerClassName={'pagination'}
-              subContainerClassName={'pages pagination'}
-              activeClassName={'active'}
-            />
-            {itemsCountTotal} Images found.<br />
-            Page {activePage+1} of {Math.ceil(itemsCountTotal/itemsCountPerPage)}
-          </div>
+          {drawPagination(paginated)}
         </SearchModal>
-      </div>
     )
 }
   
-export default Image
-
+export default ImageSearch
 const ResponsiveImage = styled.div`
   background-image: url(${props => props.backgroundURL});
   background-size: cover;
@@ -140,6 +142,10 @@ const ResponsiveImage = styled.div`
   background-repeat: no-repeat;
   width: 100%;
   height: ${props => props.height};
+
+  & button {
+    margin-top: 150px;
+  }
 `
 const SearchModal = Modal.styled`
   position:absolute;

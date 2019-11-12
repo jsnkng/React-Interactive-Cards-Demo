@@ -1,20 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ModalProvider } from 'styled-react-modal';
-import NavBar from './NavBar';
-import Cards from './Cards';
+import NavBar from './components/NavBar';
+import Cards from './components/Cards';
 
 const App = () => {
-
 
     return (
       <Wrapper>
         <ModalProvider backgroundComponent={ModalBackground}>  
-          
           <NavBar />
-          
           <Cards />
-
         </ModalProvider>
       </Wrapper>
     )
@@ -36,5 +32,5 @@ const ModalBackground = styled.div`
   width: 100vw;
   height: 100vh;
   z-index: 30;
-  background-color: rgba(0,0,0,.9);
+  background-color: rgba(0,0,0,.8);
 `

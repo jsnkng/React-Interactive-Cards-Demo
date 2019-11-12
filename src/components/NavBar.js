@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components'
-import ModalHelp from './modals/ModalHelp';
+import ModalHelp from './Help';
 
 const NavBar = ({createCard}) => {
 

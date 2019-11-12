@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Image from './modals/ModalImageSearch';
 import ReactCardFlip from 'react-card-flip';
+// import ImageSearch from './ImageSearch.js';
 
 const Card = ({data, updateCard, deleteCard}) => {
+    // const [isSearchOpen, setIsSearchOpen] = useState(false)
+
+    const [isFlipped, setIsFlipped] = useState(false)
+    
     const [featureImage, setFeatureImage] = useState(data.featureImage)
     const [title, setTitle] = useState(data.title)
     const [instructor, setInstructor] = useState(data.instructor)
     const [description, setDescription] = useState(data.description)
     const [duration, setDuration] = useState(data.duration)
     const [classType, setClassType] = useState(data.classType)
-    const [isFlipped, setIsFlipped] = useState(false)
-  
+
+
     const toggleFlip = (e) => {
       setIsFlipped(!isFlipped)
     }
+
+    // const toggleSearchModal = (e) => {
+    //   e.preventDefault()
+    //   setIsSearchOpen(!isSearchOpen)
+    // }
 
     const handleChangeTitle = (e) => { 
       const value = e.target.value
@@ -50,12 +59,13 @@ const Card = ({data, updateCard, deleteCard}) => {
       setIsFlipped(false)
     }
   
+ 
     return (
       <CardWrapper>
         <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
           
           <CardDisplay key="front" onClick={toggleFlip}>
-            <Image editable='false' featureImage={featureImage} setFeatureImage={setFeatureImage} />
+            <ResponsiveImage backgroundURL={featureImage} height="200px"></ResponsiveImage>
             <div className="classInfo">
               <h2>{title}</h2>
               <h3>{instructor}</h3>
@@ -68,7 +78,9 @@ const Card = ({data, updateCard, deleteCard}) => {
           </CardDisplay>
   
           <CardForm key="back">
-            <Image editable='true' featureImage={featureImage} setFeatureImage={setFeatureImage} />
+            <ResponsiveImage backgroundURL={featureImage} height="200px">
+              {/* <button onClick={setIsSearchOpen(true)}>Choose Image</button> */}
+            </ResponsiveImage>
             <label>Title: </label>
             <input 
               type="text"
@@ -122,7 +134,9 @@ const Card = ({data, updateCard, deleteCard}) => {
               <button onClick={() => deleteCard(data.id)}>Delete</button>
             </div>
           </CardForm>
+
         </ReactCardFlip>
+        {/* <ImageSearch isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} setFeatureImage={setFeatureImage} /> */}
       </CardWrapper>
     )
 }
@@ -133,13 +147,24 @@ const CardWrapper = styled.div`
   width: 350px;
   margin: 5px 5px;
 `
+const ResponsiveImage = styled.div`
+  background-image: url(${props => props.backgroundURL});
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: ${props => props.height};
+
+  & button {
+    margin-top: 150px;
+  }
+`
 const CardDisplay = styled.div`
   min-height: 470px;
   background-color: #111111;
   border: solid 1px #cccccc;
   cursor: pointer;
   box-shadow: 3px 3px 3px 0px rgba(0,0,0,.05);
-
   & h2 {
     display: inline-block;
     width: 100%;
