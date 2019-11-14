@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import classList from './classes';
+import classList from '../data/classes';
 import styled from 'styled-components';
 import Card from './Card';
 
@@ -24,6 +24,10 @@ const Cards = () => {
     }])
   }
   
+  const updateCard = () => {
+    return alert("Card Saved.")
+  }
+
   const deleteCard = (id) => {
     if (window.confirm('Are you sure you want to do this?\nOK to delete or Cancel to go back.')) {
       let index = data.findIndex(item => item.id === id)
@@ -33,18 +37,31 @@ const Cards = () => {
   }
 
   return (
-    <div><br />
+    <CardsWrapper>
       <button onClick={createCard}>+ New Card</button>
-      <CardWrapper>
-        {data.slice(0).reverse().map(item => <Card key={item.id} data={item} deleteCard={deleteCard} />)}
-      </CardWrapper>
-    </div>
+      <CardsContainer>
+        { data.slice(0).reverse().map((item) => {
+            return(
+              <Card 
+                key={item.id} 
+                data={item} 
+                deleteCard={deleteCard} 
+                updateCard={updateCard} 
+              />
+            )
+          })
+        }
+      </CardsContainer>
+    </CardsWrapper>
   )
 }
   
 export default Cards
 
-const CardWrapper = styled.div`
+const CardsWrapper = styled.div`
+  margin: 0;
+`
+const CardsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: top;

@@ -1,19 +1,44 @@
-import React from 'react';
+import React, { useState} from 'react';
 import Modal from 'styled-react-modal';
 
-const ModalHelp = ({isOpen, toggleModal}) => {
+const ModalHelp = () => {
+  const [isOpen, setIsOpen] = useState(false)
+  const [opacity, setOpacity] = useState(0)
+  
+  const toggleModal = () => {
+    setIsOpen(!isOpen)
+  }
+
+  const afterOpen = () => {
+    setTimeout(() => {
+      setOpacity(1);
+    }, 200);
+  }
+  
+  const beforeClose = () => {
+    return new Promise(resolve => {
+      setOpacity(0);
+      setTimeout(resolve, 200);
+    });
+  }
 
   return (
-     <ModalContentHelp
+    <>
+      <button onClick={toggleModal}>?</button>
+      <ModalContentHelp
         isOpen={isOpen}
+        afterOpen={afterOpen}
+        beforeClose={beforeClose}
         onBackgroundClick={toggleModal}
-        onEscapeKeydown={toggleModal}>
-        <div className="container__help_title">
+        onEscapeKeydown={toggleModal}
+        opacity={opacity}
+        backgroundProps={{ opacity }}>
+        <div className="container__title">
           <h2>Help</h2>
-          <div className="container__help_close">
+          <div className="container__close">
             <button onClick={toggleModal}>X</button>
           </div>
-          <div className="container__help_body">
+          <div className="container__body">
             <h3>Create</h3>
             <p> Click on the "+" button.</p>
             <h3>Update</h3>   
@@ -23,6 +48,7 @@ const ModalHelp = ({isOpen, toggleModal}) => {
           </div>
         </div>
       </ModalContentHelp>
+    </>
   )
 }
   
@@ -37,13 +63,13 @@ const ModalContentHelp = Modal.styled`
   height: 100vh;
   max-height: 1400px;
 
-  & .container__help_close {
+  & .container__close {
     position: absolute;
     top: 8px;
     right: 3px;
     padding: 4px 8px;
   }
-  & .container__help_title  {   
+  & .container__title  {   
     margin: 0;
     text-align: left;
     h2 {    
@@ -54,7 +80,7 @@ const ModalContentHelp = Modal.styled`
       margin: 10px; 
     }
   }
-  & .container__help_body  { 
+  & .container__body  { 
     background-color: #1f1f1f;  
     margin: 0;
     padding: 15px;
@@ -71,7 +97,7 @@ const ModalContentHelp = Modal.styled`
       margin: 0 0 10px 0;
     }
   }
-  & .container__help_body {
+  & .container__body {
     height: 100%;
     min-height: 480px;
     overflow: scroll;

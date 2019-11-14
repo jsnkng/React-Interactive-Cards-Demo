@@ -1,125 +1,105 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Image from './modals/ModalImageSearch';
+import ImageSearch from '../modals/ModalImageSearch';
 import ReactCardFlip from 'react-card-flip';
 
 const Card = ({data, updateCard, deleteCard}) => {
+    const [isEditable, setIsEditable] = useState(false)
+
+    const toggleEditable = (e) => {
+      setIsEditable(!isEditable)
+    }
+
     const [featureImage, setFeatureImage] = useState(data.featureImage)
     const [title, setTitle] = useState(data.title)
     const [instructor, setInstructor] = useState(data.instructor)
     const [description, setDescription] = useState(data.description)
     const [duration, setDuration] = useState(data.duration)
     const [classType, setClassType] = useState(data.classType)
-    const [isFlipped, setIsFlipped] = useState(false)
-  
-    const toggleFlip = (e) => {
-      setIsFlipped(!isFlipped)
-    }
 
-    const handleChangeTitle = (e) => { 
-      const value = e.target.value
-      setTitle(value)
-    }
-
-    const handleChangeInstructor = (e) => { 
-      const value = e.target.value
-      setInstructor(value)
-    }
-
-    const handleChangeDescription = (e) => { 
-      const value = e.target.value
-      setDescription(value)
-    }
-
-    const handleChangeDuration = (e) => { 
-      const value = e.target.value
-      setDuration(value)
-    }
-    
-    const handleChangeClassType = (e) => { 
-      const value = e.target.value
-      setClassType(value)
-    }
-
-    const handleFormSubmit = () => {
-      setTitle(title)
-      setInstructor(instructor)
-      setDescription(description)
-      setDuration(duration)
-      setClassType(classType)
-      setIsFlipped(false)
+    const handleUpdateCard = (id) => {
+      setIsEditable(false)
+      updateCard(id)
     }
   
+    const handleDeleteCard = (id) => {
+      setIsEditable(false)
+      deleteCard(id)
+    }
+
     return (
       <CardWrapper>
-        <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
+        <ReactCardFlip isFlipped={isEditable} flipDirection="horizontal">
           
-          <CardDisplay key="front" onClick={toggleFlip}>
-            <Image editable='false' featureImage={featureImage} setFeatureImage={setFeatureImage} />
+          <CardDisplay key="front" onClick={toggleEditable}>
+            <ResponsiveImage backgroundURL={featureImage} height="200px" />
             <div className="classInfo">
               <h2>{title}</h2>
               <h3>{instructor}</h3>
-              <p className="classDescription">{description}</p>
+              <p className="description">{description}</p>
             </div>
             <div>
-              <span className={classType === 'live' ? 'classType live' : 'classType onDemand'}>{classType}</span>
-              <span className="classDuration">{duration} min</span>
+              <span className={classType === 'live' ? 'type live' : 'type onDemand'}>{classType}</span>
+              <span className="duration">{duration} min</span>
             </div>
           </CardDisplay>
   
           <CardForm key="back">
-            <Image editable='true' featureImage={featureImage} setFeatureImage={setFeatureImage} />
+            <ResponsiveImage backgroundURL={featureImage} height="200px">
+              <ImageSearch setFeatureImage={setFeatureImage} />
+            </ResponsiveImage>
+            
             <label>Title: </label>
             <input 
               type="text"
               name="title"
-              value={title}
-              onChange={handleChangeTitle}
+              value={title || ""}
+              onChange={e => setTitle(e.target.value)}
               />
             <br />
             <label>Instructor:</label>
             <input
               type="text"
               name="instructor"
-              value={instructor}
-              onChange={handleChangeInstructor}
+              value={instructor || ""}
+              onChange={e => setInstructor(e.target.value)}
               />
             <br />
             <label>Description:</label>
             <textarea
               rows="6"
               name="description"
-              value={description}
-              onChange={handleChangeDescription}
+              value={description || ""}
+              onChange={e => setDescription(e.target.value)}
             />
             <br />
             <label className="form__radioLabelOnDemand">On-Demand: 
               <input
                 type="radio"
                 value="on-demand"
-                onChange={handleChangeClassType}
                 checked={classType === 'on-demand'}
+                onChange={e => setClassType(e.target.value)}
               />
             </label>
             <label className="form__radioLabelLive">Live: 
               <input
                 type="radio"
                 value="live"
-                onChange={handleChangeClassType}
                 checked={classType === 'live'}
+                onChange={e => setClassType(e.target.value)}
               />
             </label>
             <label className="form__inputLabelDuration">Duration:
               <input
                 type="number"
                 name="duration"
-                value={duration}
-                onChange={handleChangeDuration}
+                value={duration || ""}
+                onChange={e => setDuration(e.target.value)}
               />
             </label>
             <div className="form__buttons">
-              <button onClick={handleFormSubmit}>Save</button>
-              <button onClick={() => deleteCard(data.id)}>Delete</button>
+              <button onClick={() => handleUpdateCard(data.id)}>Save</button>
+              <button onClick={() => handleDeleteCard(data.id)}>Delete</button>
             </div>
           </CardForm>
         </ReactCardFlip>
@@ -161,29 +141,29 @@ const CardDisplay = styled.div`
     margin: 0 auto 20px;
     background-color: #ffffff;
   }
-  & .classDescription {
+  & .description {
     font-weight: 400;
     font-size: .75em;
     padding: 0 20px;
     height: 120px;
     overflow: hidden;
   }
-  & .classType {
+  & .type {
     float: left;
     font-weight: 700;
     text-transform: uppercase;
     color: #ffffff;
     padding: 2px 10px;
   }
-  & .classType.live {
+  & .type.live {
     background-color: #236d14;
   }
-  & .classType.onDemand {
+  & .type.onDemand {
     background-color: #ffffff;
     border-left: 0px;
     color: #000000;
   }
-  & .classDuration {
+  & .duration {
     width: 30px;
     height: 27px;
     float: right;
@@ -259,5 +239,18 @@ const CardForm = styled.div`
   }
   & .form__buttons {
     padding: 15px 0 10px;
+  }
+`
+const ResponsiveImage = styled.div`
+  background-image: url(${props => props.backgroundURL});
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: ${props => props.height};
+
+  & button {
+    position: relative;
+    top: 150px;
   }
 `
