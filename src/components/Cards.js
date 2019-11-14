@@ -1,27 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import classList from '../data/classes';
 import styled from 'styled-components';
 import Card from './Card';
-import classList from '../data/classes';
-import ImageSearch from './ImageSearch.js';
-
-const [isSearchOpen, setIsSearchOpen] = useState(false)
-
-const compare = (a, b) => {
-  // Use toUpperCase() to ignore character casing
-  const titleA = a.title.toUpperCase();
-  const titleB = b.title.toUpperCase();
-
-  let comparison = 0;
-  if (titleA > titleB) {
-    comparison = 1;
-  } else if (titleA < titleB) {
-    comparison = -1;
-  }
-  return comparison;
-}
-
 
 const Cards = () => {
+  const [data, setData] = useState(classList)
+  
+  useEffect(() => {
+    setData(data)
+  }, [data])
+
   const createCard = () => {
     const lastItem = data.slice(-1).pop();
     const lastId = lastItem ? lastItem.id + 1 : 1;
@@ -35,11 +23,9 @@ const Cards = () => {
       classType: "Type"
     }])
   }
-
-  const readCards = () => {
-    console.log(classList)
-
-    return classList
+  
+  const updateCard = () => {
+    return alert("Card Saved.")
   }
 
   const deleteCard = (id) => {
@@ -50,37 +36,32 @@ const Cards = () => {
     } 
   }
 
-  const sortCards = () => {
-  
-    console.log(data)
-   
-    data.sort(compare);
-  }
-
-  const [data, setData] = useState(readCards)
-  
-  useEffect(() => {
-    setData(data)
-  }, [data])
-
-
   return (
-    <div><br />
+    <CardsWrapper>
       <button onClick={createCard}>+ New Card</button>
-      <button onClick={sortCards}>Sort Cards</button>
-      <CardWrapper>
-        {data.slice(0).reverse().map(item => <Card key={item.id} data={item} deleteCard={deleteCard} />)}
-      </CardWrapper>
-      
-      <ImageSearch isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} setFeatureImage={setFeatureImage} />
-   
-    </div>
+      <CardsContainer>
+        { data.slice(0).reverse().map((item) => {
+            return(
+              <Card 
+                key={item.id} 
+                data={item} 
+                deleteCard={deleteCard} 
+                updateCard={updateCard} 
+              />
+            )
+          })
+        }
+      </CardsContainer>
+    </CardsWrapper>
   )
 }
   
 export default Cards
 
-const CardWrapper = styled.div`
+const CardsWrapper = styled.div`
+  margin: 0;
+`
+const CardsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: top;

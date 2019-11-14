@@ -1,27 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components'
-import ModalHelp from './Help';
+import ModalHelp from '../modals/ModalHelp';
 
-const NavBar = ({createCard}) => {
-
-  const [isOpenModalHelp, setIsOpenModalHelp] = useState(false)
-  
-  const toggleModalHelp = () => {
-    setIsOpenModalHelp(!isOpenModalHelp)
-  }
+const NavBar = () => {
 
   return (
     <Header>
       <HeaderMenu>
         <HeaderItem>
           <h1>ReactJS – Interactive Cards</h1>
-          {/* <button onClick={createCard}>+</button> */}
-          <div><button onClick={toggleModalHelp}>?</button></div>
+          <div>
+            <ModalHelp />
+          </div>
         </HeaderItem>
       </HeaderMenu>
-      <ModalHelp isOpen={isOpenModalHelp} toggleModal={toggleModalHelp}></ModalHelp>
     </Header>
-
   )
 }
 export default NavBar
