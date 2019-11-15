@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import Modal from 'styled-react-modal';
 import ReactPaginate from 'react-paginate';
@@ -33,29 +33,59 @@ const Image = ({setFeatureImage}) => {
         setTimeout(resolve, 200)
       });
     }
-   
+
     const [searchTerm, setSearchTerm] = useState('')
     const [activePage, setActivePage] = useState(1)
     const [resultsTotal, setResultsTotal] = useState(0)
     const [images, setImages] = useState([])
     const resultsPerPage = 16
+    const inputRef = useRef('')
+    const [callCount, setCallCount] = useState(0)
+    const timeoutId = useRef()
 
+    const handleActivePageChange = (e) => {
+      const value = e.selected
+      setActivePage(value+1)
+    }
+
+    const handleChange = (e) => {
+      setSearchTerm(e.target.value)
+      inputRef.current = e.target.value
+    }
+   
+    
+    useEffect(() => {
+      clearTimeout(timeoutId.current)
+      if (!searchTerm.trim()) return
+      timeoutId.current = setTimeout(() => {
+        // grab our query, but store it in state so
+        // I can show it to you below in the example 😄
+        setSearchTerm(inputRef.current)
+        setActivePage(1)
+        const doFetchImages = async () => {
+          const queryString = `client_id=${client_id}&query=${searchTerm}&page=${activePage}&per_page=${resultsPerPage}`
+  
+          const data = await fetchImages(queryString)
+          setResultsTotal(data.total_pages)
+          setImages(data.results)
+        }
+        doFetchImages()
+      }, 800)
+    }, [searchTerm])
+
+    
     useEffect(() => {
       const doFetchImages = async () => {
-        const queryString = `client_id=${client_id}&query=${searchTerm}&page=${activePage}&per_page=${resultsPerPage}`
+        const queryString = `client_id=${client_id}&query=${inputRef.current}&page=${activePage}&per_page=${resultsPerPage}`
 
         const data = await fetchImages(queryString)
         setResultsTotal(data.total_pages)
         setImages(data.results)
       }
       doFetchImages()
-    }, [searchTerm, activePage, resultsPerPage])
+    }, [activePage, resultsPerPage])
 
     
-    const handleActivePageChange = (data) => {
-      const value = data.selected
-      setActivePage(value+1)
-    }
    
     return (
       <>
@@ -86,7 +116,7 @@ const Image = ({setFeatureImage}) => {
                   type="text"
                   name="searchTerm"
                   value={searchTerm || ""}
-                  onChange={e => setSearchTerm(e.target.value)}
+                  onChange={handleChange}
                 />
               </label>
 
@@ -214,13 +244,13 @@ const SearchModal = Modal.styled`
   }
   & .container__pagination {
     position: relative;
-    font-size: .75em;
+    font-size: .925em;
     margin: 0 auto;
     width: 100%;
   }
   & .pagination {
     margin: 15px margin;
-    padding: 0;
+    padding: 4px;
   }
   & .pagination ul {
     display: inline-block;
